@@ -1,0 +1,81 @@
+Case scenario
+SELECT
+  Date,
+  SUM(Visits) OVER (ORDER BY Date) AS RunningTotal
+FROM
+  WebsiteTraffic;
+Lead and lag for time series analysis
+Case scenario
+SELECT 
+  Month,
+  Sales,
+  LAG(Sales) OVER (ORDER BY Month) AS PrevSales
+FROM 
+
+SELECT 
+  Month,
+  Sales,
+  LEAD(Sales) OVER (ORDER BY Month) AS NextSales
+FROM 
+  SalesTable;
+Percentage change
+Case scenario
+SELECT 
+    date,
+    sales,
+    (sales - LAG(sales) OVER (ORDER BY date)) / LAG(sales) OVER (ORDER BY date) AS monthly_percent_change
+FROM 
+    sales_data;
+Moving averages
+Case scenario
+SELECT Date, Daily_Cases, AVG(Daily_Cases) OVER (ORDER BY Date ROWS BETWEEN 4 PRECEDING AND CURRENT ROW) AS 5_Day_Moving_Average
+FROM covid_cases
+ORDER BY Date;
+CTE for time series analysis
+WITH rolling_average AS (
+  SELECT day, temperature,
+         AVG(temperature) OVER (ORDER BY day ROWS BETWEEN 6 PRECEDING AND CURRENT ROW) AS rolling_avg
+  FROM temperature_data
+)
+SELECT day, temperature, rolling_avg
+FROM rolling_average;
+Case scenario
+1. Gather data: 
+SELECT order_date, revenue, num_shipments
+FROM sales_data;
+2. Calculate features
+SELECT 
+  order_date, 
+  revenue, 
+  num_shipments, 
+  EXTRACT(DOW FROM order_date) AS day_of_week
+FROM sales_data;
+3. Build model: 
+SELECT 
+  LINEAR_REGR(revenue, day_of_week) OVER() AS revenue_slope,
+  AVG(revenue) - LINEAR_REGR(revenue, day_of_week) OVER() * AVG(day_of_week) AS revenue_intercept,
+  LINEAR_REGR(num_shipments, day_of_week) OVER() AS num_shipments_slope,
+  AVG(num_shipments) - LINEAR_REGR(num_shipments, day_of_week) OVER() * AVG(day_of_week) AS num_shipments_intercept
+FROM sales_data;
+4. Make predictions: 
+WITH model_parameters AS (
+  SELECT 
+    LINEAR_REGR(revenue, day_of_week) OVER() AS revenue_slope,
+    AVG(revenue) - LINEAR_REGR(revenue, day_of_week) OVER() * AVG(day_of_week) AS revenue_intercept,
+    LINEAR_REGR(num_shipments, day_of_week) OVER() AS num_shipments_slope,
+    AVG(num_shipments) - LINEAR_REGR(num_shipments, day_of_week) OVER() * AVG(day_of_week) AS num_shipments_intercept
+  FROM sales_data
+),
+predicted_values AS (
+  SELECT 
+    DATE_TRUNC('day', CURRENT_DATE + INTERVAL '1 day') AS prediction_date,
+    (SELECT revenue_slope * EXTRACT(DOW FROM CURRENT_DATE + INTERVAL '1 day') + revenue_intercept FROM model_parameters) AS predicted_revenue,
+    (SELECT num_shipments_slope * EXTRACT(DOW FROM CURRENT_DATE + INTERVAL '1 day') + num_shipments_intercept FROM model_parameters) AS predicted_num_shipments
+)
+SELECT 
+  prediction_date,
+  ROUND(predicted_revenue, 2) AS predicted_revenue,
+  ROUND(predicted_num_shipments, 2) AS predicted_num_shipments
+FROM predicted_values;
+
+

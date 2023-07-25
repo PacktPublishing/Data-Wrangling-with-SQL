@@ -1,0 +1,38 @@
+Case scenario
+* Calculate the mean and standard deviation of the salaries using the built-in AVG() and STDEV() SQL functions:
+SELECT AVG(salary), STDEV(salary) FROM employee_salary;
+* Calculate the z-score for each salary using the (salary - mean) / standard deviation formula:
+SELECT employee_id, salary, (salary - 78846) / 33048 AS z_score FROM employee_salary;
+
+SELECT employee_id, salary, (salary - 78846) / 33048 AS z_score 
+FROM employee_salary
+WHERE (salary - 78846) / 33048 > 2 OR (salary - 78846) / 33048 < -2;
+Methods for detecting outliers
+CREATE TABLE orders (
+  order_id INT,
+  customer_id INT,
+  product_name VARCHAR(255),
+  price FLOAT
+);
+
+INSERT INTO orders (order_id, customer_id, product_name, price)
+VALUES 
+(1, 101, 'Product A', 10.50),
+(2, 102, 'Product B', 20.25),
+(3, 103, 'Product C', 12.75),
+(4, 104, 'Product A', 9.50),
+(5, 105, 'Product B', 21.00),
+(6, 106, 'Product D', 8.25),
+(7, 107, 'Product E', 15.75),
+(8, 108, 'Product B', 22.50),
+(9, 109, 'Product A', 11.25),
+(10, 110, 'Product F', 7.50);
+
+SELECT product_name,
+  PERCENTILE_CONT(0.25) WITHIN GROUP (ORDER BY price) AS q1,
+  PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY price) AS median,
+  PERCENTILE_CONT(0.75) WITHIN GROUP (ORDER BY price) AS q3,
+  PERCENTILE_CONT(0.95) WITHIN GROUP (ORDER BY price) AS q95
+FROM orders
+GROUP BY product_name;
+

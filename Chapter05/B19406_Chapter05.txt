@@ -1,0 +1,64 @@
+Identifying Null/Missing Values
+SELECT COUNT(*) AS null_count FROM customers WHERE email IS NULL; 
+NULL Values vs 0
+SELECT * FROM customers WHERE phone IS NULL;
+
+SELECT name, COALESCE(phone, 'N/A') AS phone FROM customers;
+IS NULL() and IS NOT NULL() - Case Scenario 
+SELECT 
+       make, 
+       model, 
+       last_service, 
+       next_service 
+FROM vehicles
+WHERE next_service IS NULL;
+
+SELECT 
+       make, 
+       model, 
+       last_service, 
+       next_service 
+FROM vehicles
+WHERE next_service IS NOT NULL;
+IFNULL()
+SELECT IFNULL(name, 'N/A') FROM table_name;
+OR
+SELECT IFNULL(name, 0) FROM table_name;
+Case Scenario
+
+SELECT 
+       IFNULL(customer_id, 'anonymous') as customer, 
+       SUM(total) as total_sales
+FROM orders
+GROUP BY customer;
+
+SELECT 
+       IFNULL(age, 'unknown') as age, 
+       SUM(spending) as total_spending
+FROM customer
+GROUP BY age;
+COALESCE()
+COALESCE(expression1, expression2, ... expression_n);
+
+SELECT name, COALESCE(price, 0) AS price FROM orders;
+Result:
+This will result in 0 for missing values as we are using 0 where the price is null.
+Case Scenario
+SELECT name, COALESCE(email, phone) AS contact_method FROM customers;
+
+SELECT 
+       post, 
+       COALESCE(likes, 0) AS likes, 
+       COALESCE(shares, 0) AS shares 
+FROM posts;
+IS NULL VS = NULL
+* Using "IS NULL"
+SELECT * FROM employees WHERE salary IS NULL; 
+* Using "= NULL"
+SELECT * FROM employees WHERE salary = NULL; 
+
+* Using "IS NULL"
+
+SELECT * FROM employees WHERE salary IS NULL; 
+* Using "= NULL"
+SELECT * FROM employees WHERE salary = NULL; 

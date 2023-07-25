@@ -1,0 +1,159 @@
+Using Group BY
+SELECT 
+       product, 
+       SUM(revenue)as total_revenue
+FROM sales
+GROUP BY product;
+
+SELECT 
+       product, 
+       date, 
+       SUM(revenue)as total_revenue
+FROM sales
+GROUP BY product, date;
+
+SELECT Category, SUM(Revenue) AS TotalRevenue, MAX(Revenue) AS MaxRevenue, MIN(Revenue) AS MinRevenue
+FROM Sales
+GROUP BY Category;
+Case Scenario
+SELECT age, 
+         gender, 
+         COUNT(*) as num_respondents, 
+         AVG(satisfaction_rating) as avg_satisfaction
+FROM survey_responses
+GROUP BY age, gender
+ORDER BY avg_satisfaction DESC;
+
+Count()
+SELECT COUNT(*) FROM orders;
+Case Scenario
+SELECT date, 
+         COUNT(*) as count_products
+FROM sales
+GROUP BY date;
+
+SELECT 
+    user_id, 
+    COUNT(user_id) as number_of_posts,
+    DATEDIFF(NOW(), registration_date) as days_since_registration
+FROM posts
+GROUP BY user_id
+ORDER BY number_of_posts DESC
+Sum()
+SELECT 
+       SUM(price)
+FROM orders;
+
+SELECT product, 
+         SUM(price)
+FROM orders
+GROUP BY product;
+Case Scenario:
+SELECT product_name, 
+  SUM(price) as total_sales
+FROM orders
+GROUP BY product_name
+ORDER BY total_sales DESC;
+
+SELECT product_name, 
+  SUM(price * quantity) as revenue
+FROM orders
+WHERE location = 'New York' AND order_date >= '2022-01-01' AND order_date < '2022-02-01'
+GROUP BY product_name
+ORDER BY revenue DESC;
+
+SELECT 
+       SUM(CASE WHEN transaction_type = 'credit' THEN amount ELSE -     amount END) AS balance
+FROM transactions
+WHERE account_number = '824567982';
+
+SELECT 
+       SUM(CASE WHEN transaction_type = 'credit' THEN amount END) AS         Credit_amount, SUM(CASE WHEN transaction_type = 'debit' THEN amount  END) AS debit_amount
+FROM transactions
+WHERE account_number = ‘824567982’;
+Average()
+SELECT 
+       AVG(column_name) 
+FROM table_name;
+
+SELECT 
+       AVG(price) 
+FROM orders;
+
+SELECT 
+       quantity, 
+       AVG(price) 
+FROM orders 
+GROUP BY quantity;
+Case Scenario:
+SELECT 
+       customer_id, 
+       AVG(sale_amount) as avg_sales
+FROM sales_transactions 
+GROUP BY customer_id;
+
+SELECT 
+    customer_id, 
+    DATE_FORMAT(sale_date, '%Y-%m') as month, 
+    AVG(sale_amount) as avg_sales 
+FROM sales_transactions 
+GROUP BY customer_id, month
+ORDER BY month;
+
+SELECT product_id, AVG(rating) AS average_rating
+FROM product_ratings
+GROUP BY product_id;
+Min()/Max()
+SELECT MIN(total_price) FROM orders;
+
+SELECT MAX(total_price) FROM orders;
+
+SELECT MIN(total_price) FROM orders WHERE order_date >= '2020-01-03';
+
+SELECT MAX(total_price) FROM orders WHERE order_date >= '2020-01-03';
+Case Scenario
+SELECT 
+       MIN(sales_amount) as min_sales, 
+       MAX(sales_amount) as max_sales, 
+       salesperson_name
+FROM sales
+GROUP BY salesperson_name
+Case Scenario 2
+SELECT product_id, MIN(shipment_date) AS start_date, MAX(shipment_date) AS end_date
+FROM shipment_schedule
+GROUP BY product_id;
+
+SELECT 
+       MIN(departure_time) as ear_dep_time, 
+       MAX(arrival_time) as lat_dep_time
+FROM transportation_schedule
+WHERE route_id = 'ROUTE_123'
+Count_distinct()
+Case Scenario
+SELECT COUNT(DISTINCT user_id) as unique_users
+FROM user_posts;
+
+SELECT COUNT(DISTINCT customer_id) AS distinct_customers, order_date, SUM(total_amount) AS total_revenue FROM orders GROUP BY order_date;
+
+SELECT 
+       COUNT(DISTINCT customer_id)
+FROM orders
+WHERE purchase_date >= DATE_SUB(NOW(), INTERVAL 3 MONTH)
+
+SELECT 
+       diagnosis, 
+       treatment, 
+       COUNT(*) as num_visits
+FROM patient_visits
+GROUP BY diagnosis, treatment
+ORDER BY num_visits DESC;
+Case Scenario – Using all Aggregate Functions
+
+SELECT
+    SUM(total_amount) AS total_revenue,
+    AVG(quantity) AS average_quantity,
+    MAX(total_amount) AS max_order_amount,
+    MIN(total_amount) AS min_order_amount,
+    COUNT(*) AS order_count
+FROM
+    orders;

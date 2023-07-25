@@ -1,0 +1,71 @@
+Calculating descriptive statistics with SQL
+Mean
+SELECT AVG(salary) AS mean_salary
+FROM employees;
+Case scenario
+SELECT AVG(time_on_page) as avg_time_on_page
+FROM pageviews;
+Interesting read
+SELECT AVG(total_sales_amount) as avg_daily_sales
+FROM sales;
+Median 
+SELECT PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY age) AS median_age
+FROM customers;
+Interesting read
+SELECT
+    AVG(purchase_amount) AS median_purchase_amount
+FROM (
+    SELECT
+        purchase_amount,
+        ROW_NUMBER() OVER (ORDER BY purchase_amount) AS row_num,
+        COUNT(*) OVER() AS total_rows
+    FROM
+        purchases
+    WHERE
+        product_category = 'clothing'
+) AS t
+WHERE
+    row_num IN (FLOOR((total_rows + 1) / 2), CEIL((total_rows + 1) / 2));
+Mode
+SELECT MODE() WITHIN GROUP (ORDER BY color) AS mode_color
+FROM products;
+Interesting read
+SELECT brand, COUNT(*) as count
+FROM survey_results
+GROUP BY brand
+ORDER BY count DESC
+LIMIT 1;
+Standard deviation 
+SELECT STDDEV(weight) AS std_weight
+FROM products;
+
+SELECT STDDEV(salary) as salary_std_deviation
+FROM employees;
+Case scenario
+SELECT team_member_id, STDDEV(sale_amount) AS std_sale_amount
+FROM sales
+GROUP BY team_member_id;
+Variance
+SELECT VARIANCE(sales) AS var_sales
+FROM sales_data;
+
+Case scenario
+SELECT stock_name, VARIANCE(price) AS variance_price
+FROM stock_prices
+GROUP BY stock_name
+
+Interesting read
+SELECT 
+    category,
+    AVG(revenue) AS mean_sales,
+    price AS median_sales,
+    MODE() WITHIN GROUP (ORDER BY revenue) AS mode_sales,
+    VARIANCE(revenue) AS variability
+FROM sales_data
+GROUP BY category
+
+
+
+
+
+

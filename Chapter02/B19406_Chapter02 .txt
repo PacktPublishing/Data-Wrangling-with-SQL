@@ -1,0 +1,54 @@
+Practical Exercise
+Step 1 – Discovery
+Example: 
+Select count(phone) from customers;
+SQL Code: 
+Select distinct count(phone) from customers
+
+We then use the following query to see what the distinct values in the data are:
+
+Select 
+x, 
+count(distinct x) 
+from table 
+Group by x
+For Example, using this query in the above population:
+
+Select
+ phone, 
+count(distinct phone) as count1 
+from customers
+Group by phone
+Step 2 - Structuring 
+Example
+Describe Customers;
+Step 3 - Cleaning 
+Handling Null Values
+Update Customers
+Set phone=NULL
+Once this step is done, we use is null to deal with the missing values. 
+Select count(*)
+From customers  
+Where phone is null
+Handling Duplicate Values
+We delete the duplicate value using the following query:
+With cte as (
+	Select
+		 CustID,
+	     	 Name,
+	       Addrs,
+            Phone,
+            Gender,
+          	 Email,
+           Row_number() over (Partition by CustID,Name Order by                      CustID,Name ) row_num1
+     From
+         Customers
+)
+
+Delete 
+from cte
+Where row_num >1;
+
+
+
+

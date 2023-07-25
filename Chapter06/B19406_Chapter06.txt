@@ -1,0 +1,88 @@
+SQL Transpose – Rows to Column
+SELECT product, [January], [February], [March], [April]
+FROM sales
+PIVOT (SUM(sales_amount)
+       FOR month
+       IN ([January], [February], [March], [April]))
+You can also use a subquery in the IN clause in case the values to be used as columns are not known in advance.
+SELECT product, [January], [February], [March], [April]
+FROM sales
+PIVOT (SUM(sales_amount)
+       FOR month
+       IN (SELECT DISTINCT month FROM sales))
+Case Scenario
+SELECT patient_id, [Blood Test], [X-ray], [CT scan]
+FROM patient_data
+PIVOT (MAX(test_result)
+       FOR test_type
+       IN ([Blood Test], [X-ray], [CT scan]))
+
+SELECT patient_id, [Blood Test], [X-ray], [CT scan]
+FROM patient_data
+PIVOT (MAX(test_result)
+       FOR test_type
+       IN (SELECT DISTINCT test_type FROM patient_data))
+Here's an example of how you can use the PIVOT function to achieve this:
+SELECT route, [truck], [van], [bike]
+FROM delivery_data
+PIVOT (COUNT(delivery_status)
+       FOR vehicle_type
+       IN ([truck], [van], [bike]))
+GROUP BY route
+
+
+SELECT route, [truck], [van], [bike]
+FROM delivery_data
+PIVOT (COUNT(delivery_status)
+       FOR vehicle_type
+       IN (SELECT DISTINCT vehicle_type FROM delivery_data))
+GROUP BY route
+SQL Cross Tab – Column to Rows
+WITH cte AS 
+  SELECT route, delivery_status, COUNT(delivery_id) as count
+  FROM delivery_data
+  GROUP BY route, delivery_status
+)
+SELECT route,[Delivered],[In Transit],[Delayed]
+FROM cte
+PIVOT (
+  SUM(count)
+  FOR delivery_status IN ('Delivered', 'In Transit',’ Delayed’)
+)
+Case Scenario
+WITH wrangled_data AS (
+  SELECT 
+    product_category,
+    region,
+    SUM(sale_amount) as total_sale_amount
+  FROM sales_data
+  GROUP BY product_category, region
+)
+SELECT 
+  product_category,
+  SUM(CASE WHEN region = 'North' THEN total_sale_amount ELSE 0 END) as 'NorthRegion',
+  SUM(CASE WHEN region = 'South' THEN total_sale_amount ELSE 0 END) as 'SouthRegion',
+  SUM(CASE WHEN region = 'East' THEN total_sale_amount ELSE 0 END) as 'EastRegion',
+  SUM(CASE WHEN region = 'West' THEN total_sale_amount ELSE 0 END) as 'WestRegion'
+FROM wrangled_data
+GROUP BY product_category;
+Unpivoting data in SQL
+SELECT 
+       sale_id, 
+       attribute, value
+FROM sales_data
+UNPIVOT (value FOR attribute IN (product_category, region, sale_amount)) AS u
+
+SELECT 
+       sale_id, 
+       'product_category' as attribute, 
+       product_category as value FROM sales_data
+UNION
+SELECT sale_id, 
+       'region' as attribute, 
+       region as value FROM sales_data
+UNION
+SELECT sale_id, 
+       'sale_amount' as attribute, 
+       sale_amount as value 
+FROM sales_data

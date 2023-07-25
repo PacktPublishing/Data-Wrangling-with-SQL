@@ -1,0 +1,235 @@
+Case Scenario
+SELECT id,
+         product, 
+       EXTRACT(QUARTER FROM sale_date) as quarter, 
+       SUM(amount) as total_sales
+FROM sales
+GROUP BY product, quarter;
+
+SELECT EXTRACT(DOW FROM departure_time) as day_of_week, 
+       COUNT(CASE WHEN flight_delay > 0 THEN 1 ELSE NULL END) as delayed_flights,
+       AVG(flight_delay) as avg_delay
+FROM flight_data
+Datediff()
+Example:
+SELECT DATEDIFF("2022-12-06", "2022-11-24") as ‘Difference in days’; 
+For example, to calculate the number of hours between two dates:
+SELECT DATEDIFF(hour, '2022-12-05 12:00:00','2022-12-06 08:00:00') AS 'Difference in hours';
+Case Scenario 
+SELECT 
+    Id,
+    name as Employee_Name, 
+    hire_date as Hire_Date , 
+    DATEDIFF(NOW(), hire_date) as Tenure,
+    CASE 
+        WHEN DATEDIFF(NOW(), hire_date) < 365 THEN 'Less than a year'
+        WHEN DATEDIFF(NOW(), hire_date) < 730 THEN 'Between 1 and 2 years'
+        WHEN DATEDIFF(NOW(), hire_date) < 1095 THEN 'Between 2 and 3 years'
+        ELSE 'Over 3 years'
+    END as Tenure_Bucket
+FROM employees
+Timediff()
+Example:
+SELECT TIMEDIFF("2022-12-11 16:20:45", "2022-12-11 12:20:50");
+Case Scenario
+SELECT id, name, clock_in, clock_out,
+       TIMEDIFF(clock_out, clock_in) as hours_worked
+FROM employees;
+
+SELECT id, truck_number, route, departure_time, arrival_time,
+       TIMEDIFF(arrival_time, departure_time) as travel_time
+FROM schedules;
+Date_Add()
+Case Scenario
+SELECT id, order_date, delivery_date
+FROM orders
+WHERE delivery_date = DATE_ADD(order_date, INTERVAL 3 DAY);
+
+SELECT DATE_ADD(date_column, INTERVAL -value interval_unit) AS new_date
+FROM your_table;
+
+SELECT loan_id, loan_amount, interest_rate, start_date, end_date
+FROM loans
+WHERE end_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY)
+SELECT loan_id, loan_amount, interest_rate, start_date, end_date
+FROM loans
+WHERE end_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 MINUTE)
+Details of loans that are going to end in the next 2 hours:
+SELECT loan_id, loan_amount, interest_rate, start_date, end_date
+FROM loans
+WHERE end_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 2 HOUR)
+Details of loans that are going to end in the next 6 months:
+SELECT loan_id, loan_amount, interest_rate, start_date, end_date
+FROM loans
+WHERE end_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 6 MONTH)
+Details of loans that are going to end in the next 2 quarters:
+SELECT loan_id, loan_amount, interest_rate, start_date, end_date
+FROM loans
+WHERE end_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 2 QUARTER)
+Details of loans that are going to end in the next 3 years:
+SELECT loan_id, loan_amount, interest_rate, start_date, end_date
+FROM loans
+WHERE end_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 3 YEAR)
+
+SELECT id, name, stock, last_restocked_date, average_daily_usage 
+       DATE_ADD(last_restocked, INTERVAL stock/average_daily_usage DAY) as expected_stock_out
+FROM products;
+Date_Sub()
+Case Scenarios
+SELECT COUNT(*)as count_customers FROM customer_data 
+WHERE signup_date >= DATE_SUB(CURDATE(), INTERVAL 30 DAY);
+
+SELECT
+        product_id, 
+        product_name,  
+        SUM(total_sales) as total_sales 
+FROM sales_data 
+WHERE date >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+Group By product_id, product_name;
+
+SELECT SUM(total_sales) FROM sales_data 
+WHERE date >= DATE_SUB(CURDATE(), INTERVAL 40 MINUTE);
+Total Sales that took place in the last 2 hours:
+SELECT SUM(total_sales) FROM sales_data 
+WHERE date >= DATE_SUB(CURDATE(), INTERVAL 2 HOUR);
+Total Sales in the last 7 months:
+SELECT SUM(total_sales) FROM sales_data 
+WHERE date >= DATE_SUB(CURDATE(), INTERVAL 7 MONTH);
+Total Sales in the last 2 quarters:
+SELECT SUM(total_sales) FROM sales_data 
+WHERE date >= DATE_SUB(CURDATE(), INTERVAL 2 QUARTER);
+Total Sales in the last 3 years:
+SELECT SUM(total_sales) FROM sales_data 
+WHERE date >= DATE_SUB(CURDATE(), INTERVAL 3 YEAR);
+
+SELECT COUNT(*) FROM admissions 
+WHERE discharge_date >= DATE_SUB(CURDATE(), INTERVAL 30 DAY) 
+AND admission_date <= DATE_SUB(CURDATE(), INTERVAL 30 DAY);
+Date_Format() 
+Case Scenarios
+Scenario 1
+SELECT DATE_FORMAT(timestamp, '%Y-%m-%d') AS date, COUNT(*) as events
+FROM firewall_logs
+GROUP BY date
+ORDER BY date;
+Scenario 2
+SELECT DATE_FORMAT(timestamp, '%H') AS hour, COUNT(*) as events
+FROM web_server_logs
+GROUP BY hour
+ORDER BY hour;
+Scenario 3 
+SELECT DATE_FORMAT(timestamp, '%m') AS month, COUNT(*) as events
+FROM intrusion_detection_logs
+GROUP BY month
+ORDER BY month;
+
+SELECT 
+    DATE_FORMAT(sale_date, '%Y-Q%q') as sale_quarter,
+    SUM(revenue) as total_revenue
+FROM sales
+GROUP BY sale_quarter;
+STR_TO_DATE():
+Case scenarios
+Scenario 1
+SELECT 
+    customer_name, 
+    STR_TO_DATE(date_of_birth, '%d-%m-%Y') as date_of_birth_new,
+    age,
+    city
+FROM customers
+Scenario 2
+SELECT 
+    order_id, 
+    STR_TO_DATE(order_date, '%Y-%m-%d') as order_date,
+    product_name,
+    quantity
+FROM orders
+Scenario 3
+SELECT 
+    return_id, 
+    STR_TO_DATE(return_date, '%d-%m-%Y %H:%i:%s') as return_date,
+    product_name,
+    reason
+FROM returns
+Scenario 4
+
+SELECT 
+    MONTH(STR_TO_DATE(sale_date, '%m/%d/%Y')) as sale_month,
+    SUM(revenue) as total_revenue
+FROM sales
+GROUP BY sale_month;
+Curdate() / Current_Date()
+Example:
+SELECT CURDATE();
+You can also use this function to compare with a date or timestamp field in a table like this:
+SELECT * FROM table_name WHERE date_field <= CURDATE();
+Case scenario 1
+SELECT SUM(price) FROM orders WHERE date_placed = CURDATE() AND product_id = 1234;
+
+SELECT date_placed, SUM(price) FROM orders WHERE product_id = 1234 GROUP BY date_placed;
+Case scenario 2
+SELECT SUM(amount) FROM transactions WHERE date = CURDATE();
+
+SELECT COUNT(*) FROM transactions WHERE date = CURDATE() and account_number = '1234567890';
+CurTime() / Current_Time() 
+Example:
+SELECT CURTIME();
+
+SELECT employee_id, department FROM employee_logins WHERE time_of_login = CURTIME();
+Case scenario 1
+SELECT bus_number, route FROM bus_schedule WHERE arrival_time = CURTIME();
+
+SELECT bus_number, route FROM bus_schedule WHERE departure_time >= CURTIME() AND departure_time < DATE_ADD(CURTIME(), INTERVAL 1 HOUR);
+Case scenario 2
+SELECT 
+       stock_symbol, 
+       current_price 
+FROM stock_prices 
+WHERE date_time = CURTIME() AND company_name=' Apple Inc.';
+
+SELECT 
+       stock_symbol, 
+       (current_price - (SELECT current_price 
+FROM stock_prices 
+WHERE date_time = DATE_SUB(CURTIME(), INTERVAL 1 HOUR) AND stock_symbol = p.stock_symbol)) as price_change FROM stock_prices p WHERE date_time = CURTIME() HAVING price_change > 5 OR price_change < -5;
+Current_Timestamp() / Now() / Sysdate()
+Example:
+SELECT CURRENT_TIMESTAMP();
+Here is an example of how you might use the NOW() function in a SQL statement:
+SELECT NOW();
+Here is an example of how you might use the SYSDATE() function in a SQL statement:
+SELECT SYSDATE();
+Case scenario 1
+SELECT user_id, activity_type FROM user_activity WHERE date_time = CURRENT_TIMESTAMP();
+Alternatively, the same query can be written using the NOW() function:
+SELECT user_id, activity_type FROM user_activity WHERE date_time = NOW();
+OR
+SELECT user_id, activity_type FROM user_activity WHERE date_time = SYSDATE();
+Case scenario 2
+UPDATE flights
+SET status = 
+CASE
+WHEN departure_time < DATE_SUB(CURRENT_TIMESTAMP(), INTERVAL 15 MINUTE) THEN 'delayed'
+ELSE status
+END
+Cast()
+Example:
+SELECT CAST(price AS FLOAT) FROM products;
+
+SELECT CAST('2022-01-01' AS DATE);
+It is also possible to use the CAST function with mathematical operations, for example:
+SELECT CAST(5.5 AS INT);
+Case scenario 1
+The SQL statement would be:
+SELECT CAST(price AS FLOAT) FROM products;
+Case scenario 2
+The SQL statement would be:
+SELECT CAST(time_of_purchase AS TIME) FROM sales;
+
+
+
+
+
+
+
+
