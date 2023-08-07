@@ -47,9 +47,6 @@ With the following software and hardware list you can run all code files present
 | 1-13 | MySQL | Windows or macOS |
 | 1-13 | SQL Server (for some examples) | Windows or macOS |
 
-
-We also provide a PDF file that has color images of the screenshots/diagrams used in this book. [Click here to download it]().
-
 ### Related products
 * SQL Query Design Patterns and Best Practices [[Packt]](https://www.packtpub.com/product/sql-query-design-patterns-and-best-practices/9781837633289?utm_source=github&utm_medium=repository&utm_campaign=9781837633289) [[Amazon]](https://www.amazon.com/dp/1837633282)
 
