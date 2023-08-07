@@ -54,7 +54,7 @@ With the following software and hardware list you can run all code files present
 
 
 
-## Get to Know the Author
+## Get to Know the Authors
 **Raghav Kandarpa,**
 is a skilled author and data analyst passionate about extracting insights from complex 
 datasets. Originally from India, he pursued his academic and professional goals in data analysis in the 
